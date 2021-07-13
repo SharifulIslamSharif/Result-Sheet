@@ -1,0 +1,76 @@
+﻿@model IEnumerable<School_Management_System.Models.StudentInfo>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@Html.Raw(TempData["CreateMessage"])
+@Html.Raw(TempData["UpdateMessage"])
+@Html.Raw(TempData["DeleteMessage"])
+<div class="padding-md" style="margin-top:2%">
+    <div id="main-container">
+        <div class="panel panel-default table-responsive">
+            <div class="panel-heading" style="background-color:lightsteelblue">
+                <h4 style="text-align:left; color:#161572;"><strong><i class="fa fa-adjust"></i>&nbsp;Student Details List: (ModelView)</strong></h4>
+                <button onclick="printInvoice('printInvoicePage')" class="btn btn-white">PDF</button>
+                <a href="/StudentInfo/Create" class="level btn-info btn-sm pull-right" style="margin-top:-3%;"><i class="fa fa-new"></i>Add new</a>
+            </div>
+            <div class="panel-body" style="color:black;" id="printInvoicePage">
+                <table class="table">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Gender)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DBO)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Image)
+                        </th>
+                        <th>Action</th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Gender)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DBO)
+                            </td>
+                            <td>
+                                <img src="@Url.Content(item.Image)" height="80" width="80" />
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function printInvoice(a) {
+        var backup = document.body.innerHTML;
+        var divContent = document.getElementById(a).innerHTML;
+        document.body.innerHTML = divContent;
+        window.print(); document.body.innerHTML = backup;
+    }</script>
+
+@*<div class="btn-group btn-group-sm">
+        <button onclick="printInvoice('printInvoicePage')" class="btn btn-white">CSV</button>
+        <button onclick="printInvoice('printInvoicePage')" class="btn btn-white">PDF</button>
+        <button onclick="printInvoice('printInvoicePage')" class="btn btn-white"><i class="fa fa-print fa-lg"></i> Print</button>
+    </div>*@

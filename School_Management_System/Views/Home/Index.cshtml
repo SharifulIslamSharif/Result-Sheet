@@ -1,0 +1,232 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body style="text-align:center">
+    <div class="padding-md" style="margin-top:2%">
+        <div id="main-container">
+            <div class="panel panel-default table-responsive">
+                <div class="panel-heading" style="background-color:darkgrey">
+                    <h4 style="text-align:left; color:#161572;"><strong><i class="fa fa-adjust"></i>&nbsp;Students Others information: (Ajux)</strong></h4>
+                </div>
+                <div class="panel-body" style="color:black;">
+                    <div style=" text-align:left">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <hr>
+                                    <form>
+                                        <div class="row">
+                                           <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <input type="hidden" name="studentId" id="studentId" />
+                                                    Student Name<input type="text" class="form-control"  name="studentName" id="studentName" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    Section<input type="text" class="form-control" name="section" id="section" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-0 col-sm-0">
+                                            </div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    Date of Birth<input type="date" class="form-control"  name="dob" id="dob" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    Picture<input type="file" class="form-control" name="imguploader" id="imguploader" accept="image/*" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <p>
+                            <button class="btn btn-success" type="button" id="btnAdd"><i class="glyphicon glyphicon-save"></i>Add New</button>
+                            <button class="btn btn-primary" type="button" id="btnUpdate"><i class="glyphicon glyphicon-pencil"></i>Update</button>
+                            <button class="btn btn-default" type="button" onclick="reset();"><i class="glyphicon glyphicon-refresh"></i>Reset</button>
+                        </p>
+                    </div>
+                    <div>
+                        <table id="tblStudent" border="1" style="width:100%; border-color:darkcyan; border-width:2px; border-style:double"></table>
+                    </div>
+                    <script>
+        $(document).ready(function () {
+            console.log("ready!");
+            reset();
+        });
+
+
+        $("#btnAdd").on("click", function (e) {
+            e.preventDefault();
+
+            var file = $("#imguploader").get(0).files[0];
+            var formData = new FormData();
+            formData.set("file", file, file.name);
+            formData.set("studentId", $('#studentId').val());
+            formData.set("studentName", $('#studentName').val());
+            formData.set("section", $('#section').val());
+            formData.set("dob", $('#dob').val());
+
+            $.ajax({
+                url: '@Url.Action("InsertStudent", "Home")',
+                method: "post",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false
+            })
+            .then(function (result) {
+                console.log(result);     
+                reset();
+            });
+        });
+
+        $("#btnUpdate").on("click", function (e) {
+            e.preventDefault();
+
+            var file = $("#imguploader").get(0).files[0];
+            var formData = new FormData();
+            formData.set("file", file, file.name);
+            formData.set("studentId", $('#studentId').val());
+            formData.set("studentName", $('#studentName').val());
+            formData.set("section", $('#section').val());
+            formData.set("dob", $('#dob').val());
+
+            $.ajax({
+                url: '@Url.Action("UpdateStudent", "Home")',
+                method: "post",
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false
+            })
+            .then(function (result) {
+                console.log(result);
+                reset();
+            });
+        });
+
+        function reset() {
+            $('#studentId').val('');
+            $('#studentName').val('');
+            $('#section').val('');
+            $('#dob').val('');
+
+            $('#btnAdd').show();
+            $('#btnUpdate').hide();
+            $('#imguploader').val(null);
+            getStudents();
+        }
+
+        function getStudents() {
+            $('#tblStudent').empty();
+            var ajaxReq = {};
+            ajaxReq.url = "/Home/GetStudents";
+            ajaxReq.type = "GET";
+            ajaxReq.datatype = "json";
+            ajaxReq.contentType = "application/json";
+            ajaxReq.success = function (res) {
+                console.log(res);
+                $('#tblStudent').append(
+                    '<tr>'
+                    + '<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Student Name</th>'
+                    + '<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Section</th>'
+                    + '<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date of Birth</th>'
+                    + '<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Picture</th>'
+                    + '<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Options</th>'
+                    + '</tr>'
+                );
+
+                for (var i = 0; i < res.length; i++) {
+                    var sl = i + 1;
+                    $("#tblStudent").append(
+                        '<tr>'
+                        + '<td>' + res[i].StudentName + '</td>'
+                        + '<td>' + res[i].Section + '</td>'
+                        + '<td>' + convertDateToISO(res[i].DoB) + '</td>'
+                        + '<td><img src=' + res[i].Picture + ' /></td>'
+                        + '<td>'
+                        + '<button class="btn btn-primary" onclick= "getStudentById(' + res[i].StudentID + ')" ><i class="glyphicon glyphicon-pencil"></i> Edit</button > '
+                        + '<button class="btn btn-danger" onclick= "removeStudentById(' + res[i].StudentID + ')" ><i class="glyphicon glyphicon-trash"></i> Remove</button > '
+                        + '</td>'
+                        + '</tr>'
+                    );
+                }
+            };
+            ajaxReq.error = function () { console.log(ajaxReq.error.message); };
+            $.ajax(ajaxReq);
+        }
+
+        function getStudentById(studentId) {
+            var ajaxReq = {};
+            ajaxReq.url = "/Home/GetStudentById?id=" + studentId;
+            ajaxReq.type = "GET";
+            ajaxReq.datatype = "json";
+            ajaxReq.contentType = "application/json";
+            ajaxReq.success = function (res) {
+                $('#studentId').val(res.StudentID);
+                $('#studentName').val(res.StudentName);
+                $('#section').val(res.Section);
+                $('#dob').val(convertDateToISO(res.DoB));
+                $('#btnAdd').hide();
+                $('#btnUpdate').show();
+            };
+            ajaxReq.error = function () { console.log(ajaxReq.error.message); };
+            $.ajax(ajaxReq);
+        }
+
+        function removeStudentById(studentId) {
+            if (confirm('Are you sure to delete?')) {
+                var ajaxReq = {};
+                ajaxReq.url = "/Home/DeleteStudent";
+                ajaxReq.data = JSON.stringify({ id: studentId });
+                ajaxReq.type = "POST";
+                ajaxReq.datatype = "json";
+                ajaxReq.contentType = "application/json";
+                ajaxReq.success = function (res) {
+                    console.log(res);
+                    reset();
+                };
+                ajaxReq.error = function () { console.log(ajaxReq.error.message); };
+                $.ajax(ajaxReq);
+            }
+        }
+
+        function convertDateToISO(date) {
+            var nDate = date === null ? 0 : parseInt((date).toString().substr(6, 13));
+            var strDate = new Date(nDate).toISOString().substr(0, 10);
+            return strDate;
+        }
+                    </script>
+                    @*<div>
+                        @Html.ActionLink("Back to List", "Index")
+                    </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+

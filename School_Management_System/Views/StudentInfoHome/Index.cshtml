@@ -1,0 +1,65 @@
+﻿@model IEnumerable<School_Management_System.Models.StudentContactInfo>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@*<p>
+    @Html.ActionLink("Create New", "InsertStudent")
+</p>*@
+<div class="padding-md" style="margin-top:2%">
+    <div id="main-container">
+        <div class="panel panel-default table-responsive">
+            <div class="panel-heading">
+                <h4 style="text-align:left; color:#161572;"><strong><i class="fa fa-adjust"></i>&nbsp;Student Information List: (ViewModel)</strong></h4>
+                <a href="/StudentInfoHome/InsertStudent" class="level btn-primary btn-sm pull-right" style="margin-top:-3%;"><i class="fa fa-new"></i>Add new</a>
+            </div>
+            <div class="panel-body" style="color:black;">
+                <table class="table" border="1" cellpadding="10" style="border-color:darkgoldenrod">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.StudentName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Address)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DoB)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Picture)
+                        </th>
+                        <th>Action</th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        var strDoB = item.DoB == null ? "" : Convert.ToDateTime(item.DoB).ToString("yyyy-MM-dd");
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.StudentName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Address)
+                            </td>
+                            <td>
+                                @strDoB
+                            </td>
+                            <td>
+                                <img src="@item.Picture" height="200" />
+                            </td>
+                            <td>
+                                <a href="/StudentInfoHome/UpdateStudent?id=@item.StudentID">Edit</a> |
+                                <a href="/StudentInfoHome/DeleteStudent?id=@item.StudentID">Delete</a>
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

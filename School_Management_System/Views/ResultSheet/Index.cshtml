@@ -1,0 +1,269 @@
+﻿@model IEnumerable<School_Management_System.ViewModels.VmSection>
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+
+    <style type="text/css">
+        .auto-style1 {
+            width: 416px;
+        }
+
+        .auto-style2 {
+            width: 203px;
+        }
+
+        .auto-style3 {
+            width: 203px;
+            height: 34px;
+        }
+
+        .auto-style4 {
+            height: 34px;
+        }
+
+        .auto-style5 {
+            margin-left: 66px;
+        }
+
+        .auto-style6 {
+            width: 500px;
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="padding-md" style="margin-top:2%; margin-right:1%; margin-left:1%">
+        <div id="main-container">
+            <div class="panel panel-default table-responsive">
+                <div class="panel-heading" style="background-color:cadetblue">
+                    <h4 style="text-align:left; color:#161572;"><strong><i class="fa fa-adjust"></i>&nbsp;Add Result: (Multi Data)</strong></h4>
+                </div>
+                <div class="panel-body" style="color:black;">
+                    <div class="padding-md">
+                        <form id="formElem">
+                            <input type="hidden" id="StudentId" />
+                            <div class="form-horizontal">
+                                <table class="auto-style1">
+                                    <tr>
+                                        <td class="auto-style3">Section</td>
+                                        <td class="auto-style4">
+                                            <p style="padding-top:10px; margin-left:5%" class="form-group">
+                                                <select id="SectionId" style="width:270px; height:35px">
+                                                    @foreach (var item in Model)
+                                                    {
+                                                        <option value="@item.SectionId">@item.SectionName</option>
+                                                    }
+                                                </select>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <table class="auto-style1">
+
+                                    <tr>
+                                        <td class="auto-style2">Student Name</td>
+                                        <td>
+                                            <input type="text" style="width:270px; height:35px; margin-left:10%" id="StudentName" />
+                                        </td>
+                                    </tr>
+                                </table><br />
+                                <table class="auto-style1">
+
+                                    <tr>
+                                        <td class="auto-style2">Grade</td>
+                                        <td>
+                                            <input type="text" style="width:270px; height:35px; margin-left:10%" id="Grade" />
+                                        </td>
+                                    </tr>
+                                </table><br />
+                                <table class="auto-style1">
+
+                                    <tr>
+                                        <td class="auto-style2">GPA</td>
+                                        <td>
+                                            <input type="text" style="width:270px; height:35px; margin-left:10%" id="GPA" />
+                                        </td>
+                                    </tr>
+                                </table><br />
+                                <table class="auto-style1">
+                                    <tr>
+                                        <td class="auto-style2">
+                                            <button class="btn btn-info" type="button" onclick="addToList();"><i class="glyphicon glyphicon-plus"></i>Add to List</button>
+                                            <button class="btn btn-success" type="button" onclick="add();" id="btnAdd"><i class="glyphicon glyphicon-save"></i>Submit</button>
+                                            <button class="btn btn-primary" type="button" onclick="update();" id="btnUpdate" hidden="hidden"><i class="glyphicon glyphicon-pencil"></i>Update</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                    <button class="btn btn-default" type="button" onclick="reset();"><i class="glyphicon glyphicon-refresh"></i>Refresh</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <p>
+        <ul id="ul"></ul>
+    </p>
+    <hr />
+
+    <div class="padding-md" style="margin-top:-1%; margin-right:1%; margin-left:1%">
+        <div id="main-container">
+            <div class="panel panel-default table-responsive">
+                <div class="panel-heading" style="background-color:cadetblue">
+                    <h4 style="text-align:left; color:#161572;"><strong><i class="fa fa-adjust"></i>&nbsp;Result Sheet: (Multi Data)</strong></h4>
+                </div>
+                <table id="tbl" border="0">
+                    <thead>
+                        <tr>
+                            <th class="auto-style6" style="width:5%">Student Name</th>
+                            <th class="auto-style6" style="width:5%">Grade</th>
+                            <th class="auto-style6" style="width:5%">GPA</th>
+                            <th class="auto-style6" style="width:5%">Section</th>
+                            <th class="auto-style6" style="width:5%">Edit</th>
+                            <th class="auto-style6" style="width:5%">Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tb" style="text-align:center"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var listResultSheetTemp = [];
+        var listResultSheet = [];
+        function addToList() {
+            var StudentName = document.getElementById('StudentName');
+            var Grade = document.getElementById('Grade');
+            var GPA = document.getElementById('GPA');
+            var SectionId = document.getElementById('SectionId');
+            listResultSheetTemp.push({ StudentName: StudentName.value, Grade: Grade.value, GPA: GPA.value, SectionId: SectionId.value });
+            StudentName.value = '';
+            Grade.value = '';
+            GPA.value = '';
+            displayAddedResultSheet(listResultSheetTemp);
+        }
+
+        function displayAddedResultSheet(listResultSheetTemp) {
+            var resultSheet = "";
+            for (var i = 0; i < listResultSheetTemp.length; i++) {
+                resultSheet += "<li>" + listResultSheetTemp[i].StudentName + " " + listResultSheetTemp[i].Grade + " " + listResultSheetTemp[i].GPA + "</li>";
+            }
+            var ul = document.getElementById('ul');
+            ul.innerHTML = resultSheet;
+        }
+
+        function displayResultSheet(listResultSheet) {
+            var tb = document.getElementById('tb');
+            tb.innerHTML = '';
+            var tr = "";
+            for (var i = 0; i < listResultSheet.length; i++) {
+                tr += "<tr><td>" + listResultSheet[i].StudentName + "</td><td> " + listResultSheet[i].Grade + "</td><td> " + listResultSheet[i].GPA + "</td><td> " + listResultSheet[i].SectionName + "</td><td><button onclick='edit(" + listResultSheet[i].StudentId + ")'>Edit</button></td><td><button onclick='remove(" + listResultSheet[i].StudentId + ")'>Remove</button></td></tr>";
+            }
+            tb.innerHTML = tr;
+        }
+
+        function add() {
+            const http = new XMLHttpRequest()
+            http.open('POST', '/ResultSheet/AddResultSheet')
+            http.setRequestHeader('Content-type', 'application/json')
+            http.send(JSON.stringify({ listResultSheet: listResultSheetTemp })) // Make sure to stringify
+            http.onload = function () {
+                alert(http.responseText)
+                reset();
+            }
+        }
+
+        function update() {
+            var StudentId = document.getElementById('StudentId');
+            var StudentName = document.getElementById('StudentName');
+            var Grade = document.getElementById('Grade');
+            var GPA = document.getElementById('GPA');
+            var SectionId = document.getElementById('SectionId');
+
+            const http = new XMLHttpRequest()
+            http.open('POST', '/ResultSheet/UpdateResultSheet?id=' + StudentId.value)
+            http.setRequestHeader('Content-type', 'application/json')
+            http.send(JSON.stringify({ StudentId: StudentId.value, StudentName: StudentName.value, Grade: Grade.value, GPA: GPA.value, SectionId: SectionId.value })) // Make sure to stringify
+            http.onload = function () {
+                alert(http.responseText)
+                reset();
+            }
+        }
+
+        function reset() {
+            document.getElementById('StudentName').value = '';
+            document.getElementById('Grade').value = '';
+            document.getElementById('GPA').value = '';
+            var ul = document.getElementById('ul');
+            ul.innerHTML = '';
+            document.getElementById('btnAdd').hidden = false;
+            document.getElementById('btnUpdate').hidden = true;
+            get();
+        }
+
+        function get() {
+            var http = new XMLHttpRequest();
+            var url = '/ResultSheet/GetResultSheet';
+            http.onload = function () {
+                if (http.readyState == 4 && http.status == "200") {
+                    var json = JSON.parse(http.responseText);
+                    displayResultSheet(json);
+                }
+            }
+            http.open("GET", url, true);
+            http.send(null);
+        }
+
+        function edit(id) {
+            var http = new XMLHttpRequest();
+            var url = '/ResultSheet/GetResultSheetById?id=' + id;
+            http.onload = function () {
+                if (http.readyState == 4 && http.status == "200") {
+                    var oResult = JSON.parse(http.responseText);
+                    document.getElementById('StudentId').value = oResult.StudentId;
+                    document.getElementById('StudentName').value = oResult.StudentName;
+                    document.getElementById('Grade').value = oResult.Grade;
+                    document.getElementById('GPA').value = oResult.GPA;
+                    document.getElementById('SectionId').value = oResult.SectionId;
+                    document.getElementById('btnAdd').hidden = true;
+                    document.getElementById('btnUpdate').hidden = false;
+                }
+            }
+            http.open("GET", url, true);
+            http.send(null);
+        }
+
+        function remove(id) {
+            if (confirm('Are you sure to remove')) {
+                var http = new XMLHttpRequest();
+                var url = '/ResultSheet/DeleteResultSheet?id=' + id;
+                http.onload = function () {
+                    if (http.readyState == 4 && http.status == "200") {
+                        alert(http.responseText)
+                        reset();
+                    }
+                }
+                http.open("POST", url, true);
+                http.send(null);
+            }
+        }
+    </script>
+</body>
+</html>
+
